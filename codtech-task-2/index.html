@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rainbow Homes – Find Your Happy Place</title>
+  <meta name="description" content="A vibrant real estate agency website for clients looking to purchase property. Filter, favorite, compare, and book visits – all in one colourful page."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1020; /* deep space */
+      --card:#161833;
+      --muted:#9aa4ff;
+      --text:#e8ebff;
+      --pill:#21255a;
+      --ring: 0 0 0 3px rgba(255,255,255,.15);
+      --grad-1: linear-gradient(135deg,#7c3aed,#06b6d4);
+      --grad-2: linear-gradient(135deg,#22c55e,#f97316);
+      --grad-3: linear-gradient(135deg,#ef4444,#f59e0b);
+      --shadow: 0 15px 35px rgba(0,0,0,.35);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:'Plus Jakarta Sans',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(124,58,237,.25), transparent 60%),
+        radial-gradient(1000px 600px at 110% 10%, rgba(6,182,212,.25), transparent 60%),
+        radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.25), transparent 60%),
+        var(--bg);
+      overflow-x:hidden;
+    }
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+    /* Navbar */
+    .nav{position:sticky;top:0;z-index:50;background:rgba(10,11,25,.6);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.3px}
+    .logo{width:36px;height:36px;border-radius:12px;background:var(--grad-1);display:grid;place-items:center;box-shadow:var(--shadow)}
+    .logo svg{filter:drop-shadow(0 5px 10px rgba(0,0,0,.35))}
+    .nav-actions{display:flex;gap:10px;align-items:center}
+    .btn{border:0;border-radius:14px;padding:10px 14px;font-weight:700;cursor:pointer;transition:.2s transform,.2s opacity,.2s box-shadow}
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
+    .btn-primary{background:var(--grad-1);color:white;box-shadow:var(--shadow)}
+    .btn-ghost{background:rgba(255,255,255,.06);color:var(--text);border:1px solid rgba(255,255,255,.12)}
+
+    /* Hero */
+    .hero{padding:56px 0 28px}
+    .hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:28px;align-items:stretch}
+    .hero-card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:calc(var(--radius) + 6px);
+      padding:28px;position:relative;overflow:hidden
+    }
+    .hero-card h1{font-size:40px;line-height:1.05;margin:0 0 10px;font-weight:800}
+    .accent{background:var(--grad-2);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero-card p{opacity:.9}
+    .hero-rainbow{position:absolute;inset:auto -30% -50% -30%;height:280px;background:conic-gradient(from 0deg,#7c3aed,#06b6d4,#22c55e,#f97316,#ef4444,#7c3aed);filter:blur(40px);opacity:.2}
+    .searchbar{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;margin-top:16px}
+    .searchbar input,.searchbar select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:12px 14px;color:var(--text);outline:none}
+    .searchbar input::placeholder{color:#cfd3ff99}
+    .badge-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .badge{background:var(--pill);padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.1);font-weight:700;font-size:12px;letter-spacing:.2px}
+    .hot{background:var(--grad-3);color:#111}
+
+    .hero-side{display:grid;gap:14px}
+    .hero-mini{border-radius:22px;padding:18px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02));display:flex;align-items:center;gap:14px}
+    .hero-mini .dot{width:44px;height:44px;border-radius:14px;background:var(--grad-2);display:grid;place-items:center}
+
+    /* Filters */
+    .filters{margin:24px 0 10px;display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+    .filters .field{display:flex;flex-direction:column;gap:6px}
+    .filters label{font-size:12px;opacity:.8}
+    .filters input,.filters select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:10px 12px;color:var(--text);outline:none}
+    .switch{display:flex;align-items:center;gap:8px}
+
+    /* Cards */
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .card{position:relative;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));box-shadow:var(--shadow)}
+    .thumb{position:relative;height:200px;background:#222}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .chip{position:absolute;top:12px;left:12px;background:rgba(17,17,17,.6);backdrop-filter:blur(6px);padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.2);font-size:12px}
+    .price-tag{position:absolute;bottom:12px;left:12px;background:var(--grad-1);color:#fff;padding:8px 12px;border-radius:999px;font-weight:800;box-shadow:var(--shadow)}
+    .fav{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);width:38px;height:38px;border-radius:12px;display:grid;place-items:center;cursor:pointer}
+    .fav.active{background:linear-gradient(135deg,#f59e0b,#ef4444)}
+
+    .body{padding:14px 14px 16px}
+    .title{font-weight:800;margin:2px 0 6px;font-size:18px}
+    .meta{display:flex;gap:10px;flex-wrap:wrap;opacity:.9;font-size:13px}
+    .meta .pill{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:6px 10px;border-radius:999px}
+    .cta-row{display:flex;gap:10px;margin-top:12px}
+    .btn-small{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--text);font-weight:700;cursor:pointer}
+    .btn-small.primary{background:var(--grad-2);color:#111}
+
+    /* Compare Bar */
+    .compare-bar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(10,11,25,.8);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:10px 12px;display:none;gap:10px;z-index:40}
+    .compare-bar .slot{width:140px;border-radius:12px;border:1px dashed rgba(255,255,255,.25);padding:8px;display:flex;align-items:center;gap:8px}
+    .compare-bar .slot img{width:48px;height:40px;object-fit:cover;border-radius:8px}
+    .compare-bar .actions{display:flex;gap:8px}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:60}
+    .modal .panel{width:min(780px,95vw);border-radius:22px;background:#111428;border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);overflow:hidden}
+    .modal .panel header{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.12)}
+    .modal .panel .content{padding:18px}
+    .close-x{cursor:pointer;border-radius:10px;padding:6px 10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14)}
+
+    /* Sections */
+    .section-title{display:flex;align-items:center;justify-content:space-between;margin:26px 0 12px}
+    .section-title h3{margin:0;font-size:22px}
+
+    /* Footer */
+    footer{margin:40px 0 70px;opacity:.8;text-align:center}
+
+    /* Responsive */
+    @media (max-width:1000px){
+      .hero-grid{grid-template-columns:1fr}
+      .searchbar{grid-template-columns:1fr 1fr;}
+      .filters{grid-template-columns:repeat(3,1fr)}
+      .grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:640px){
+      .searchbar{grid-template-columns:1fr}
+      .filters{grid-template-columns:1fr 1fr}
+      .grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 12L12 4l9 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 10v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span>Rainbow Homes</span>
+      </div>
+      <div class="nav-actions">
+        <button class="btn btn-ghost" id="btn-favorites">❤ Favorites</button>
+        <button class="btn btn-primary" id="btn-new-listing">List Your Property</button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container hero-grid">
+      <div class="hero-card">
+        <div class="hero-rainbow" aria-hidden="true"></div>
+        <h1>Find your <span class="accent">Happy Place</span> with bold colours & brighter deals.</h1>
+        <p>Browse curated homes, filter by your needs, favorite the best ones, compare details, and book a visit – all in one playful, professional experience.</p>
+        <div class="searchbar" role="search">
+          <input id="q" placeholder="Search by area, city, keyword… (e.g. Itabashi, garden)" />
+          <select id="city"></select>
+          <select id="type">
+            <option value="">Any Type</option>
+            <option>Apartment</option>
+            <option>Villa</option>
+            <option>Studio</option>
+            <option>Townhouse</option>
+          </select>
+          <button class="btn btn-primary" id="do-search">Search</button>
+        </div>
+        <div class="badge-row" aria-label="Quick tags">
+          <span class="badge hot">Hot Deals</span>
+          <span class="badge">Near Metro</span>
+          <span class="badge">Pet Friendly</span>
+          <span class="badge">Sea View</span>
+          <span class="badge">Smart Home</span>
+        </div>
+      </div>
+      <div class="hero-side">
+        <div class="hero-mini">
+          <div class="dot" aria-hidden="true"></div>
+          <div>
+            <strong style="display:block">Instant Mortgage Calculator</strong>
+            <span>Estimate monthly EMI before you visit. ✨</span>
+          </div>
+          <div style="margin-left:auto">
+            <button class="btn btn-primary" id="open-mortgage">Open</button>
+          </div>
+        </div>
+        <div class="hero-mini">
+          <div class="dot" style="background:var(--grad-1)" aria-hidden="true"></div>
+          <div>
+            <strong style="display:block">Colour Themes</strong>
+            <span>Flip the vibe live.</span>
+          </div>
+          <div class="switch" style="margin-left:auto">
+            <button class="btn btn-ghost" id="theme-default">Aurora</button>
+            <button class="btn btn-ghost" id="theme-sunset">Sunset</button>
+            <button class="btn btn-ghost" id="theme-candy">Candy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="section-title">
+      <h3>Filters</h3>
+      <div class="switch">
+        <label for="favorites-only">Show favorites only</label>
+        <input type="checkbox" id="favorites-only" />
+      </div>
+    </div>
+    <section class="filters" aria-label="Property filters">
+      <div class="field">
+        <label>Min Price (₹)</label>
+        <input type="number" id="minPrice" placeholder="0" min="0" />
+      </div>
+      <div class="field">
+        <label>Max Price (₹)</label>
+        <input type="number" id="maxPrice" placeholder="3,00,00,000" min="0" />
+      </div>
+      <div class="field">
+        <label>Bedrooms</label>
+        <select id="beds">
+          <option value="">Any</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Baths</label>
+        <select id="baths">
+          <option value="">Any</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Sort</label>
+        <select id="sort">
+          <option value="popular">Most Popular</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="newest">Newest</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <button class="btn btn-primary" id="clear">Clear Filters</button>
+      </div>
+    </section>
+
+    <div id="results" class="grid" aria-live="polite"></div>
+
+    <footer>
+      © <span id="year"></span> Rainbow Homes • Built with ❤️, gradients, and vanilla JS.
+    </footer>
+  </main>
+
+  <!-- Compare Bar -->
+  <div class="compare-bar" id="compareBar" role="region" aria-label="Compare selected properties">
+    <div class="slot" data-slot="0">Empty</div>
+    <div class="slot" data-slot="1">Empty</div>
+    <div class="slot" data-slot="2">Empty</div>
+    <div class="actions">
+      <button class="btn btn-ghost" id="resetCompare">Reset</button>
+      <button class="btn btn-primary" id="openCompare">Compare (0)</button>
+    </div>
+  </div>
+
+  <!-- Details / Book Visit Modal -->
+  <div class="modal" id="detailsModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="panel">
+      <header>
+        <strong id="detailsTitle">Property Details</strong>
+        <button class="close-x" data-close="#detailsModal">Close</button>
+      </header>
+      <div class="content" id="detailsContent"></div>
+    </div>
+  </div>
+
+  <!-- Mortgage Modal -->
+  <div class="modal" id="mortgageModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="panel">
+      <header>
+        <strong>Mortgage / EMI Calculator</strong>
+        <button class="close-x" data-close="#mortgageModal">Close</button>
+      </header>
+      <div class="content">
+        <form id="emiForm" class="filters" style="grid-template-columns:repeat(4,1fr)">
+          <div class="field">
+            <label>Home Price (₹)</label>
+            <input type="number" id="emiPrice" placeholder="1,00,00,000" required />
+          </div>
+          <div class="field">
+            <label>Down Payment (₹)</label>
+            <input type="number" id="emiDown" placeholder="10,00,000" value="1000000" />
+          </div>
+          <div class="field">
+            <label>Interest (Annual %)</label>
+            <input type="number" id="emiRate" step="0.01" placeholder="8.5" value="8.5" />
+          </div>
+          <div class="field">
+            <label>Tenure (Years)</label>
+            <input type="number" id="emiYears" placeholder="20" value="20" />
+          </div>
+        </form>
+        <div class="section-title"><h3>Result</h3></div>
+        <div id="emiResult">Enter values to calculate your monthly EMI.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compare Modal -->
+  <div class="modal" id="compareModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="panel">
+      <header>
+        <strong>Compare Properties</strong>
+        <button class="close-x" data-close="#compareModal">Close</button>
+      </header>
+      <div class="content" id="compareContent"></div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Mock Data ----------
+    const PROPS = [
+      {id:1,title:'Skyline Vista Apartment',city:'Pune',area:'Kharadi',type:'Apartment',beds:2,baths:2,price:9500000,cover:'https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop',popular:95,created:'2025-08-22',features:['Near IT Park','Balcony','Gym Access'],lat:18.551,lon:73.944},
+      {id:2,title:'Nagpur Green Villa',city:'Nagpur',area:'Manish Nagar',type:'Villa',beds:4,baths:3,price:16500000,cover:'https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1200&auto=format&fit=crop',popular:88,created:'2025-07-19',features:['Garden','Parking','Smart Lock'],lat:21.128,lon:79.06},
+      {id:3,title:'Itabashi Cozy Studio',city:'Tokyo',area:'Itabashi',type:'Studio',beds:1,baths:1,price:7800000,cover:'https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?q=80&w=1200&auto=format&fit=crop',popular:91,created:'2025-09-01',features:['Near Metro','Furnished','City View'],lat:35.751,lon:139.71},
+      {id:4,title:'Baner Bright Townhouse',city:'Pune',area:'Baner',type:'Townhouse',beds:3,baths:3,price:13200000,cover:'https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=1200&auto=format&fit=crop',popular:83,created:'2025-05-03',features:['Clubhouse','Kids Play','Pool'],lat:18.559,lon:73.78},
+      {id:5,title:'Bay Breeze Apartment',city:'Mumbai',area:'Bandra',type:'Apartment',beds:3,baths:2,price:24500000,cover:'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=1200&auto=format&fit=crop',popular:99,created:'2025-08-28',features:['Sea View','Gym','Doorman'],lat:19.06,lon:72.84},
+      {id:6,title:'Smart Nest Studio',city:'Bengaluru',area:'Whitefield',type:'Studio',beds:1,baths:1,price:6200000,cover:'https://images.unsplash.com/photo-1523217582562-09d0def993a6?q=80&w=1200&auto=format&fit=crop',popular:79,created:'2025-03-14',features:['Smart Home','Coworking','Balcony'],lat:12.97,lon:77.75},
+      {id:7,title:'Gardenia Villa',city:'Hyderabad',area:'Gachibowli',type:'Villa',beds:5,baths:4,price:21000000,cover:'https://images.unsplash.com/photo-1600585153431-8fd1f6f90f16?q=80&w=1200&auto=format&fit=crop',popular:86,created:'2025-01-11',features:['Garden','Solar','EV Charger'],lat:17.44,lon:78.35},
+      {id:8,title:'Riverside Retreat',city:'Kolkata',area:'Salt Lake',type:'Apartment',beds:2,baths:2,price:8800000,cover:'https://images.unsplash.com/photo-1501183638710-841dd1904471?q=80&w=1200&auto=format&fit=crop',popular:72,created:'2025-06-20',features:['Park Facing','Lift','Security'],lat:22.58,lon:88.41},
+      {id:9,title:'Sunset Haven',city:'Goa',area:'Candolim',type:'Villa',beds:4,baths:4,price:32500000,cover:'https://images.unsplash.com/photo-1616596872501-7b2f49c2b1d6?q=80&w=1200&auto=format&fit=crop',popular:94,created:'2025-08-02',features:['Pool','Beach Nearby','Rental Friendly'],lat:15.52,lon:73.76},
+      {id:10,title:'City Lights Apartment',city:'Delhi',area:'Dwarka',type:'Apartment',beds:3,baths:2,price:13500000,cover:'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1200&auto=format&fit=crop',popular:77,created:'2025-04-05',features:['Metro Walk','Gym','Parking'],lat:28.57,lon:77.05},
+      {id:11,title:'Lakeview Townhouse',city:'Pune',area:'Hinjawadi',type:'Townhouse',beds:3,baths:3,price:11800000,cover:'https://images.unsplash.com/photo-1600607687920-4ce9ce5f7d3f?q=80&w=1200&auto=format&fit=crop',popular:81,created:'2025-07-01',features:['Lake View','Clubhouse','Security'],lat:18.59,lon:73.73},
+      {id:12,title:'Zen Studio',city:'Tokyo',area:'Arakawa',type:'Studio',beds:1,baths:1,price:6900000,cover:'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop',popular:84,created:'2025-08-16',features:['Compact','Near JR Line','Furnished'],lat:35.737,lon:139.78}
+    ];
+
+    // ---------- State ----------
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+    const fmt = n => n.toLocaleString('en-IN');
+
+    const state = {
+      q:'',city:'',type:'',minPrice:'',maxPrice:'',beds:'',baths:'',sort:'popular',
+      favorites: new Set(JSON.parse(localStorage.getItem('rh:favs')||'[]')),
+      compare: [],
+      favoritesOnly:false,
+    };
+
+    // ---------- Init ----------
+    function init(){
+      $('#year').textContent = new Date().getFullYear();
+      // Populate cities
+      const cities = ['',...new Set(PROPS.map(p=>p.city))];
+      $('#city').innerHTML = cities.map(c=>`<option value="${c}">${c||'Any City'}</option>`).join('');
+      // Bind inputs
+      $('#q').addEventListener('input', e=>{state.q=e.target.value; render()});
+      $('#city').addEventListener('change', e=>{state.city=e.target.value; render()});
+      $('#type').addEventListener('change', e=>{state.type=e.target.value; render()});
+      $('#minPrice').addEventListener('input', e=>{state.minPrice=+e.target.value||''; render()});
+      $('#maxPrice').addEventListener('input', e=>{state.maxPrice=+e.target.value||''; render()});
+      $('#beds').addEventListener('change', e=>{state.beds=+e.target.value||''; render()});
+      $('#baths').addEventListener('change', e=>{state.baths=+e.target.value||''; render()});
+      $('#sort').addEventListener('change', e=>{state.sort=e.target.value; render()});
+      $('#favorites-only').addEventListener('change', e=>{state.favoritesOnly=e.target.checked; render()});
+      $('#do-search').addEventListener('click', ()=> render());
+      $('#clear').addEventListener('click', ()=>{Object.assign(state,{q:'',city:'',type:'',minPrice:'',maxPrice:'',beds:'',baths:'',sort:'popular',favoritesOnly:false});
+        $('#q').value='';$('#city').value='';$('#type').value='';$('#minPrice').value='';$('#maxPrice').value='';$('#beds').value='';$('#baths').value='';$('#sort').value='popular';$('#favorites-only').checked=false;render();});
+
+      // Navbar actions
+      $('#btn-favorites').addEventListener('click', ()=>{state.favoritesOnly=!state.favoritesOnly; $('#favorites-only').checked=state.favoritesOnly; render();});
+      $('#btn-new-listing').addEventListener('click', ()=>{
+        alert('Listing portal coming soon! For now, contact: hello@rainbow.homes');
+      });
+
+      // Theme toggles
+      $('#theme-default').addEventListener('click', ()=>setTheme('aurora'));
+      $('#theme-sunset').addEventListener('click', ()=>setTheme('sunset'));
+      $('#theme-candy').addEventListener('click', ()=>setTheme('candy'));
+
+      // Modals
+      $('[data-close="#detailsModal"]').addEventListener('click', ()=>closeModal('#detailsModal'));
+      $('[data-close="#mortgageModal"]').addEventListener('click', ()=>closeModal('#mortgageModal'));
+      $('[data-close="#compareModal"]').addEventListener('click', ()=>closeModal('#compareModal'));
+      $('#open-mortgage').addEventListener('click', ()=>openModal('#mortgageModal'));
+      $('#openCompare').addEventListener('click', ()=>openCompare());
+      $('#resetCompare').addEventListener('click', ()=>{state.compare=[]; updateCompareBar();});
+
+      // EMI calc live update
+      $$('#emiForm input').forEach(el=> el.addEventListener('input', calcEMI));
+
+      render();
+      calcEMI();
+      setTheme('aurora');
+    }
+
+    // ---------- Theme ----------
+    function setTheme(name){
+      const root = document.documentElement.style;
+      if(name==='sunset'){
+        root.setProperty('--grad-1','linear-gradient(135deg,#f97316,#ef4444)');
+        root.setProperty('--grad-2','linear-gradient(135deg,#fde047,#f97316)');
+        root.setProperty('--grad-3','linear-gradient(135deg,#22c55e,#16a34a)');
+        document.body.style.background = `radial-gradient(1200px 600px at 0% 0%, rgba(249,115,22,.25), transparent 60%),
+          radial-gradient(1000px 600px at 100% 10%, rgba(239,68,68,.25), transparent 60%),
+          radial-gradient(900px 500px at 50% 120%, rgba(253,224,71,.25), transparent 60%), var(--bg)`;
+      } else if(name==='candy'){
+        root.setProperty('--grad-1','linear-gradient(135deg,#ec4899,#8b5cf6)');
+        root.setProperty('--grad-2','linear-gradient(135deg,#22d3ee,#38bdf8)');
+        root.setProperty('--grad-3','linear-gradient(135deg,#f43f5e,#f59e0b)');
+        document.body.style.background = `radial-gradient(1200px 600px at 10% -10%, rgba(139,92,246,.25), transparent 60%),
+          radial-gradient(1000px 600px at 110% 10%, rgba(236,72,153,.25), transparent 60%),
+          radial-gradient(900px 500px at 50% 120%, rgba(56,189,248,.25), transparent 60%), var(--bg)`;
+      } else {
+        // aurora
+        root.setProperty('--grad-1','linear-gradient(135deg,#7c3aed,#06b6d4)');
+        root.setProperty('--grad-2','linear-gradient(135deg,#22c55e,#f97316)');
+        root.setProperty('--grad-3','linear-gradient(135deg,#ef4444,#f59e0b)');
+        document.body.style.background = `radial-gradient(1200px 600px at 10% -10%, rgba(124,58,237,.25), transparent 60%),
+          radial-gradient(1000px 600px at 110% 10%, rgba(6,182,212,.25), transparent 60%),
+          radial-gradient(900px 500px at 50% 120%, rgba(34,197,94,.25), transparent 60%), var(--bg)`;
+      }
+    }
+
+    // ---------- Rendering ----------
+    function render(){
+      const cards = filterSort(PROPS).map(cardHTML).join('');
+      $('#results').innerHTML = cards || emptyStateHTML();
+      bindCardActions();
+      updateCompareBar();
+    }
+
+    function filterSort(items){
+      let x = items.slice();
+      const {q,city,type,minPrice,maxPrice,beds,baths,sort,favoritesOnly,favorites} = state;
+      if(q){ const t=q.toLowerCase(); x = x.filter(p=> (p.title+p.area+p.city+p.type+p.features.join(' ')).toLowerCase().includes(t)); }
+      if(city) x = x.filter(p=>p.city===city);
+      if(type) x = x.filter(p=>p.type===type);
+      if(minPrice!=='') x = x.filter(p=>p.price>=minPrice);
+      if(maxPrice!=='') x = x.filter(p=>p.price<=maxPrice);
+      if(beds!=='') x = x.filter(p=>p.beds>=beds);
+      if(baths!=='') x = x.filter(p=>p.baths>=baths);
+      if(favoritesOnly) x = x.filter(p=>favorites.has(p.id));
+
+      if(sort==='price-asc') x.sort((a,b)=>a.price-b.price);
+      else if(sort==='price-desc') x.sort((a,b)=>b.price-a.price);
+      else if(sort==='newest') x.sort((a,b)=> new Date(b.created)-new Date(a.created));
+      else x.sort((a,b)=>b.popular-a.popular);
+
+      return x;
+    }
+
+    function cardHTML(p){
+      const fav = state.favorites.has(p.id)?'active':'';
+      return `
+      <article class="card" data-id="${p.id}">
+        <div class="thumb">
+          <img src="${p.cover}" alt="${p.title} cover" loading="lazy"/>
+          <span class="chip">${p.city} • ${p.area}</span>
+          <span class="price-tag">₹${fmt(p.price)}</span>
+          <button class="fav ${fav}" title="Toggle favorite" data-action="fav" aria-label="favorite">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 22l7.8-8.6 1-1a5.5 5.5 0 0 0 0-7.8Z" stroke="white" stroke-width="2" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        <div class="body">
+          <div class="title">${p.title}</div>
+          <div class="meta">
+            <span class="pill">🛏 ${p.beds} Bed</span>
+            <span class="pill">🛁 ${p.baths} Bath</span>
+            <span class="pill">🏷 ${p.type}</span>
+          </div>
+          <div class="meta" style="margin-top:8px">${p.features.map(f=>`<span class="pill">${f}</span>`).join('')}</div>
+          <div class="cta-row">
+            <button class="btn-small primary" data-action="details">View Details</button>
+            <button class="btn-small" data-action="visit">Book Visit</button>
+            <button class="btn-small" data-action="compare">Compare</button>
+          </div>
+        </div>
+      </article>`;
+    }
+
+    function emptyStateHTML(){
+      return `<div class="hero-mini" style="grid-column:1/-1;justify-content:center">
+        <div class="dot"></div>
+        <div>
+          <strong>No properties match your filters.</strong><br>
+          <span>Try clearing filters or searching a different city.</span>
+        </div>
+      </div>`;
+    }
+
+    function bindCardActions(){
+      $$('#results .card').forEach(card=>{
+        const id = +card.dataset.id;
+        card.querySelector('[data-action="fav"]').addEventListener('click', ()=>toggleFav(id, card));
+        card.querySelector('[data-action="details"]').addEventListener('click', ()=>openDetails(id));
+        card.querySelector('[data-action="visit"]').addEventListener('click', ()=>openVisit(id));
+        card.querySelector('[data-action="compare"]').addEventListener('click', ()=>addToCompare(id));
+      });
+    }
+
+    function toggleFav(id, el){
+      if(state.favorites.has(id)) state.favorites.delete(id); else state.favorites.add(id);
+      localStorage.setItem('rh:favs', JSON.stringify([...state.favorites]));
+      el.classList.toggle('active');
+      if(state.favoritesOnly) render();
+    }
+
+    // ---------- Compare ----------
+    function addToCompare(id){
+      if(state.compare.includes(id)) return;
+      if(state.compare.length>=3){ alert('You can compare up to 3 homes.'); return; }
+      state.compare.push(id);
+      updateCompareBar();
+    }
+
+    function updateCompareBar(){
+      const bar = $('#compareBar');
+      if(state.compare.length===0){ bar.style.display='none'; $('#openCompare').textContent='Compare (0)'; return; }
+      bar.style.display='flex';
+      $('#openCompare').textContent = `Compare (${state.compare.length})`;
+      $$('#compareBar .slot').forEach((slot,i)=>{
+        const p = PROPS.find(pp=>pp.id===state.compare[i]);
+        if(!p){ slot.textContent = 'Empty'; slot.style.borderStyle='dashed'; slot.innerHTML='Empty'; return; }
+        slot.style.borderStyle='solid';
+        slot.innerHTML = `<img src="${p.cover}" alt="${p.title}"><div><strong>${p.city}</strong><div style="opacity:.8;font-size:12px">₹${fmt(p.price)}</div></div>`;
+      });
+    }
+
+    function openCompare(){
+      const items = state.compare.map(id=>PROPS.find(p=>p.id===id));
+      if(items.length<2){ alert('Select at least 2 properties to compare.'); return; }
+      const rows = [
+        ['Title', ...items.map(i=>i.title)],
+        ['City/Area', ...items.map(i=>i.city+' • '+i.area)],
+        ['Type', ...items.map(i=>i.type)],
+        ['Price', ...items.map(i=>'₹'+fmt(i.price))],
+        ['Beds', ...items.map(i=>i.beds)],
+        ['Baths', ...items.map(i=>i.baths)],
+        ['Key Features', ...items.map(i=>i.features.join(', '))],
+      ];
+      const table = `<div style="overflow:auto"><table style="width:100%;border-collapse:separate;border-spacing:0 8px">
+        ${rows.map(r=>`<tr>${r.map((c,idx)=> `<td style="padding:10px ${idx?14:0}px">${idx?`<div style=\"background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);padding:10px;border-radius:12px\">${c}</div>`:`<strong>${c}</strong>`}</td>`).join('')}</tr>`).join('')}
+      </table></div>`;
+      $('#compareContent').innerHTML = table;
+      openModal('#compareModal');
+    }
+
+    // ---------- Details & Visit ----------
+    function openDetails(id){
+      const p = PROPS.find(pp=>pp.id===id);
+      $('#detailsTitle').textContent = p.title;
+      const map = `https://www.openstreetmap.org/export/embed.html?bbox=${p.lon-0.02}%2C${p.lat-0.02}%2C${p.lon+0.02}%2C${p.lat+0.02}&layer=mapnik&marker=${p.lat}%2C${p.lon}`;
+      $('#detailsContent').innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <img src="${p.cover}" alt="${p.title}" style="width:100%;height:260px;object-fit:cover;border-radius:16px">
+          <iframe title="map" src="${map}" style="width:100%;height:260px;border:0;border-radius:16px"></iframe>
+        </div>
+        <div class="meta" style="margin:14px 0">
+          <span class="pill">City: ${p.city}</span>
+          <span class="pill">Area: ${p.area}</span>
+          <span class="pill">Type: ${p.type}</span>
+          <span class="pill">Beds: ${p.beds}</span>
+          <span class="pill">Baths: ${p.baths}</span>
+        </div>
+        <p style="opacity:.9">A colourful, well‑lit home with ${p.features.join(', ').toLowerCase()}. Perfect for modern living with quick access to essentials.</p>
+        <div class="cta-row">
+          <button class="btn btn-primary" onclick="prefillEMI(${p.price})">Estimate EMI for ₹${fmt(p.price)}</button>
+          <button class="btn btn-ghost" onclick="openVisit(${p.id})">Book a Visit</button>
+        </div>
+      `;
+      openModal('#detailsModal');
+    }
+
+    function openVisit(id){
+      const p = PROPS.find(pp=>pp.id===id);
+      $('#detailsTitle').textContent = 'Book a Visit – '+p.title;
+      $('#detailsContent').innerHTML = `
+        <form id="visitForm" style="display:grid;gap:12px">
+          <div class="filters" style="grid-template-columns:1fr 1fr 1fr">
+            <div class="field"><label>Your Name</label><input required placeholder="Full name" id="vName"></div>
+            <div class="field"><label>Phone</label><input required placeholder="Phone" id="vPhone"></div>
+            <div class="field"><label>Date</label><input type="date" required id="vDate"></div>
+          </div>
+          <textarea id="vMsg" rows="3" placeholder="Any preferences or questions?" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:12px;color:var(--text)"></textarea>
+          <div class="cta-row">
+            <button class="btn btn-primary" type="submit">Submit Request</button>
+            <button type="button" class="btn btn-ghost" data-close="#detailsModal">Cancel</button>
+          </div>
+        </form>`;
+      openModal('#detailsModal');
+      $('#visitForm').addEventListener('submit', (e)=>{
+        e.preventDefault();
+        alert('Visit request submitted! Our agent will contact you shortly.');
+        closeModal('#detailsModal');
+      });
+    }
+
+    // ---------- Modals ----------
+    function openModal(sel){
+      const m = $(sel); m.style.display='flex'; m.setAttribute('aria-hidden','false');
+    }
+    function closeModal(sel){
+      const m = $(sel); m.style.display='none'; m.setAttribute('aria-hidden','true');
+    }
+
+    // ---------- EMI ----------
+    function prefillEMI(price){
+      $('#emiPrice').value = price; openModal('#mortgageModal'); calcEMI();
+    }
+    function calcEMI(){
+      const P = +$('#emiPrice').value||0;
+      const down = +$('#emiDown').value||0;
+      const annual = (+$('#emiRate').value||0)/100;
+      const years = +$('#emiYears').value||0;
+      const principal = Math.max(P-down,0);
+      const r = annual/12; // monthly rate
+      const n = years*12;
+      let emi = 0;
+      if(r>0 && n>0){ emi = principal * r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1); }
+      const total = emi*n;
+      const interest = total - principal;
+      $('#emiResult').innerHTML = principal>0 && n>0 ? 
+        `<div class="hero-mini"><div class="dot" style="background:var(--grad-1)"></div><div><strong>Monthly EMI:</strong> ₹${fmt(Math.round(emi))}<br><span style="opacity:.8">Principal: ₹${fmt(Math.round(principal))} • Interest: ₹${fmt(Math.round(interest))} • Tenure: ${years} yrs</span></div></div>`
+        : 'Enter values to calculate your monthly EMI.';
+    }
+
+    // ---------- Kickoff ----------
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
